@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using FormStone;
+using WhetStone.Looping;
 
 namespace Rulatte
 {
@@ -12,11 +11,23 @@ namespace Rulatte
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
-        static void Main()
+        static void Main(string[] argv)
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+            var mainForm = new MainForm();
+            switch (argv.Length)
+            {
+                case 0:
+                    break;
+                case 1:
+                    mainForm.Load += (a,b)=>mainForm.LoadPath(argv[0]);
+                    break;
+                default:
+                    throw new Exception("bad number of arguments for program");
+            }
+            mainForm.Maintain(Properties.Settings.Default, "mainFormLocation");
+            Application.Run(mainForm);
         }
     }
 }
