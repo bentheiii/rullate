@@ -11,6 +11,7 @@ namespace Rulatte
         public string name { get; set; }
         public double weight { get; set; } = 1;
         public bool enabled { get; set; } = true;
+        public string link { get; set; } = null;
 
         [JsonIgnore]
         public double effectiveWeight

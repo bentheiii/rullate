@@ -24,7 +24,7 @@ namespace Rulatte
         {
             using (var write = new FileStream(sourcePath,FileMode.Create, FileAccess.Write))
             {
-                write.Write(this, Formatter);
+                Formatter.Serialize(this, write);
             }
         }
     }

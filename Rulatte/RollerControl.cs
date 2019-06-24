@@ -17,7 +17,16 @@ namespace Rulatte
         {
             InitializeComponent();
         }
-        private Control wrap(Labor l)
+        private void recalcOdds()
+        {
+            var totalWeights = profile.labors.Sum(a => a.effectiveWeight);
+            _controlDict.Values.Do(a =>
+            {
+                a.totalWeights = totalWeights;
+                a.sync();
+            });
+        }
+        private LaborControl wrap(Labor l)
         {
             var ret = new LaborControl(l);
             _controlDict[l] = ret;
@@ -29,7 +38,9 @@ namespace Rulatte
             ProfileNameLinkLabel.Text = profile.name;
             laborListFlowLayoutPanel.Controls.Clear();
 
-            var controls = Enumerable.Select(profile.labors, wrap).ToArray();
+            var controls = profile.labors.Select(wrap).ToArray();
+
+            recalcOdds();
 
             laborListFlowLayoutPanel.Controls.AddRange(controls);
 
@@ -42,6 +53,7 @@ namespace Rulatte
         }
         private void OnLaborChanged(object sender, LaborChangedEventArgs args)
         {
+            bool recalc = true;
             switch (args.change)
             {
                 case LaborChange.Remove:
@@ -49,8 +61,19 @@ namespace Rulatte
                     _controlDict.Remove(args.labor);
                     laborListFlowLayoutPanel.Controls.Remove((Control)sender);
                     break;
+                case LaborChange.NameChanged:
+                    recalc = false;
+                    break;
+                case LaborChange.LinkChanged:
+                    recalc = false;
+                    break;
                 default:
                     break;
+            }
+
+            if (recalc)
+            {
+                recalcOdds();
             }
             resetSaveTimer();
         }
@@ -90,6 +113,8 @@ namespace Rulatte
 
             var cont = wrap(newLabor);
             laborListFlowLayoutPanel.Controls.Add(cont);
+
+            recalcOdds();
 
             resetSaveTimer();
         }

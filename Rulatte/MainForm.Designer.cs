@@ -67,7 +67,7 @@
         #endregion
 
         private System.Windows.Forms.SaveFileDialog saveFileDialog1;
-        private ProfileSelect profileSelect1;
+        private ProfileSelect profileSelect1 = new ProfileSelect();
     }
 }
 
